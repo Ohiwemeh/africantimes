@@ -1,29 +1,29 @@
 import Link from "next/link";
 import React from "react";
-import styles from "./menuCategories.module.css";
+
 
 const MenuCategories = () => {
   return (
-    <div className={styles.categoryList}>
+    <div >
       <Link
         href="/blog?cat=style"
-        className={`${styles.categoryItem} ${styles.style}`}
+      
       >
         Style
       </Link>
-      <Link href="/blog" className={`${styles.categoryItem} ${styles.fashion}`}>
+      <Link href="/blog" >
         Fashion
       </Link>
-      <Link href="/blog" className={`${styles.categoryItem} ${styles.food}`}>
+      <Link href="/blog">
         Food
       </Link>
-      <Link href="/blog" className={`${styles.categoryItem} ${styles.travel}`}>
+      <Link href="/blog">
         Travel
       </Link>
-      <Link href="/blog" className={`${styles.categoryItem} ${styles.culture}`}>
+      <Link href="/blog" >
         Culture
       </Link>
-      <Link href="/blog" className={`${styles.categoryItem} ${styles.coding}`}>
+      <Link href="/blog">
         Coding
       </Link>
     </div>
