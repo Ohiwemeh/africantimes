@@ -16,7 +16,7 @@ const ThemeToggle = () => {
           : { backgroundColor: "#0f172a" }
       }
     >
-      <Image src="/moon.png" alt="" width={14} height={14} />
+      {/* <Image src="/moon.png" alt="" width={14} height={14} /> */}
       <div
         style={
           theme === "dark"
@@ -24,7 +24,7 @@ const ThemeToggle = () => {
             : { right: 1, background: "white", position: "relative" }
         }
       ></div>
-      <Image src="/sun.png" alt="" width={14} height={14} />
+      {/* <Image src="/sun.png" alt="" width={14} height={14} /> */}
     </div>
   );
 };

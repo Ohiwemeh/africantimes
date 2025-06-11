@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import CategoryList from "@/components/categoryList/CategoryList";
 import CardList from "@/components/cardList/CardList";
-import Menu from "@/components/Menu/Menu";
 
 export default async function Home({ searchParams }) {
   const searchedParams = await searchParams;
