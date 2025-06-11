@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { CiCirclePlus } from "react-icons/ci";
+import { FaImage } from "react-icons/fa";
 
 // Import the new markdown editor - this is much more deployment-friendly
 import MDEditor from '@uiw/react-md-editor';
@@ -24,39 +26,39 @@ const WritePage = () => {
   const [title, setTitle] = useState("");
   const [catSlug, setCatSlug] = useState("");
 
-  useEffect(() => {
-    const upload = async () => {
-      setUploading(true);
+ useEffect(() => {
+  const upload = async () => {
+    setUploading(true);
+    
+    // Prevent duplicate uploads of the same file
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "africantimes");
 
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "africantimes");
+    try {
+      const res = await fetch("https://api.cloudinary.com/v1_1/dufw6bsko/image/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-      try {
-        const res = await fetch("https://api.cloudinary.com/v1_1/dufw6bsko/image/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        const data = await res.json();
-        setMedia(data.secure_url);
-        
-        // Auto-insert the uploaded image into the markdown editor
-        // This creates a much smoother user experience
-        if (data.secure_url && value !== undefined) {
-          const imageMarkdown = `\n![Uploaded Image](${data.secure_url})\n`;
-          setValue(prevValue => (prevValue || "") + imageMarkdown);
-        }
-      } catch (err) {
-        console.error("Cloudinary upload failed:", err);
-      } finally {
-        setUploading(false);
+      const data = await res.json();
+      setMedia(data.secure_url);
+      
+      if (data.secure_url) {
+        const imageMarkdown = `\n![Uploaded Image](${data.secure_url})\n`;
+        setValue(prevValue => (prevValue || "") + imageMarkdown);
       }
-    };
+    } catch (err) {
+      console.error("Cloudinary upload failed:", err);
+    } finally {
+      setUploading(false);
+      // Clear the file after upload to prevent re-uploads
+      setFile(null);
+    }
+  };
 
-    if (file) upload();
-  }, [file, value]);
-
+  if (file) upload();
+}, [file]);
   if (status === "loading") {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -134,12 +136,13 @@ const WritePage = () => {
         {/* Media upload button: Positioned to be easily accessible but not intrusive */}
         {/* The circular design and shadow make it feel like a floating action button */}
         <button 
-          className="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 
+          className="flex items-center justify-center w-12 h-12 bg-blue-500 hover:bg-blue-600 
                      rounded-full shadow-lg transition-colors duration-200 mb-4
                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           onClick={() => setOpen(!open)}
         >
-          <Image src="/plus.png" alt="Add media" width={16} height={16} />
+          {/* <Image src="/plus.png" alt="Add media" width={16} height={16} /> */}
+          <CiCirclePlus className="w-20 h-20 text-white" />
         </button>
         
         {/* Media options: These appear when the plus button is clicked */}
@@ -156,30 +159,17 @@ const WritePage = () => {
                 setPreview(URL.createObjectURL(selectedFile));
               }}
               style={{ display: "none" }}
-              accept="image/*"
+              
             />
             
             {/* Image upload button: Clear visual hierarchy with hover effects */}
-            <button className="flex items-center justify-center w-10 h-10 bg-white border-2 border-gray-300
-                               rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200
-                               focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button >
               <label htmlFor="image" className="cursor-pointer flex items-center justify-center w-full h-full">
-                <Image src="/image.png" alt="Upload image" width={16} height={16} />
+                <FaImage className="w-6 h-6"/>
               </label>
             </button>
             
-            {/* Additional media buttons: Consistent styling for future features */}
-            <button className="flex items-center justify-center w-10 h-10 bg-white border-2 border-gray-300
-                               rounded-lg hover:border-green-500 hover:bg-green-50 transition-all duration-200
-                               focus:outline-none focus:ring-2 focus:ring-green-500">
-              <Image src="/external.png" alt="External link" width={16} height={16} />
-            </button>
-            
-            <button className="flex items-center justify-center w-10 h-10 bg-white border-2 border-gray-300
-                               rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all duration-200
-                               focus:outline-none focus:ring-2 focus:ring-purple-500">
-              <Image src="/video.png" alt="Video" width={16} height={16} />
-            </button>
+          
           </div>
         )}
         
